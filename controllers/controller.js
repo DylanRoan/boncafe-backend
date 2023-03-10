@@ -12,7 +12,10 @@ const getCode = async (req, res, next) => {
 
     let result = await db.findInMain(code)
     if (result == undefined || result.length == 0) 
+    {
+        res.status(200).json(`${code} does not exist.`)
         return
+    }
 
     await db.createClient(code)
     let client = await db.getTable(code)
