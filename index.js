@@ -3,12 +3,13 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(express.static('html'))
 
 const rt = require('./router/router.js')
 app.use("/", rt)
 
 app.route("/").get(function (req, res) {
-  res.send(req.headers, req.originalUrl, req.method, req.body)
+  res.sendFile(process.cwd() + "/html/index.html")
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
