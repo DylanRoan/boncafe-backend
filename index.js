@@ -8,7 +8,7 @@ const rt = require('./router/router.js')
 app.use("/", rt)
 
 app.route("/").get(function (req, res) {
-  response.send(request.headers, request.originalUrl, request.method, request.body)
+  res.send(request.headers, request.originalUrl, request.method, request.body)
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
