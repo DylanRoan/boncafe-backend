@@ -8,11 +8,7 @@ const rt = require('./router/router.js')
 app.use("/", rt)
 
 app.route("/").get(function (req, res) {
-  res.sendFile(process.cwd() + "/test.html")
-})
-
-app.get('/', (request, response) => {
-    response.send(request.headers, request.originalUrl, request.method, request.body)
+  response.send(request.headers, request.originalUrl, request.method, request.body)
 })
 
   app.listen(port, () => {
