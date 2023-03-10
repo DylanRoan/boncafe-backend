@@ -15,11 +15,6 @@ const getTable = (request, response) => {
     })
 }
 
-
-
-
-//add client
-//
-
-
-  module.exports = { getTable }
+module.exports = { 
+  getTable 
+}
