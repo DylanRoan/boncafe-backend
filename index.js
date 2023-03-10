@@ -15,7 +15,7 @@ app.get('/', (request, response) => {
 })
 
   app.listen(port, () => {
-    //startup
+    console.log(`Connected to port ${port}`)
   })
 
 const db = require('./postgres.js')
