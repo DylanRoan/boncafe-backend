@@ -1,8 +1,8 @@
 const db = require('../postgres/postgres.js')
 
-//POST table '/table'
+//GET table '/table'
 const getTable = (req, res, next) => {
-    res.json({message: "POST WAH"})
+    db.getTable(req, res)
 }
 
 module.exports = {
