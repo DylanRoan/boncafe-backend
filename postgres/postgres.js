@@ -13,20 +13,28 @@ async function queryDB (query) {
   return queryResult;
 }
 
-const getTable = (request, response) => {
-    pool.query('SELECT * FROM main', (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-    })
+//get entire table
+async function getTable (table) {
+  let item = await queryDB(`SELECT * FROM ${table}`)
+  return item.rows
+}
+
+//get specific item
+async function findInMain (code) {
+  let item = await queryDB(`SELECT * FROM main WHERE code = '${code}'`)
+  return item.rows
+}
+
+//create table if doesnt exist
+async function createClient (code) {
+  let item = await queryDB(`CREATE TABLE IF NOT EXISTS ${code} (machine VARCHAR(255), serial VARCHAR(255), model VARCHAR(255), maintenance_due VARCHAR(255))`)
+  console.log(`Creating table if doesn't exist: ${code}`)
+  return item.rows
 }
 
 async function validLogin (pass, email) {
   let item = await queryDB(`SELECT * FROM main WHERE password = '${pass}' AND name = '${email}'`)
   item = item.rows
-  console.log(pass +" " + email)
-  console.log(item)
   if (item == undefined || item.length == 0)
     return false
   return item[0].code
@@ -35,5 +43,7 @@ async function validLogin (pass, email) {
 
 module.exports = { 
   getTable,
+  findInMain,
+  createClient,
   validLogin
 }
