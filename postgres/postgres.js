@@ -8,42 +8,35 @@ const pool = new Pool({
   }
 })
 
-async function queryDB (query) {
-  let queryResult = await pool.query(query, []);
+//query the database
+async function queryDB (query, params = []) {
+  let queryResult = await pool.query(query, params);
   return queryResult;
 }
 
-//get entire table
-async function getTable (table) {
-  let item = await queryDB(`SELECT * FROM ${table}`)
+// ==================== SPECIFIC QUERIES ====================
+
+//get main table
+async function getMain () {
+  let item = await queryDB(`SELECT * FROM main`)
   return item.rows
 }
 
-//get specific item
-async function findInMain (code) {
-  let item = await queryDB(`SELECT * FROM main WHERE code = '${code}'`)
+//authenticate
+async function login (password, email) {
+  let item = await queryDB("SELECT code FROM auth WHERE password = $1 AND email = $2", [password, email])
+  //let item = await queryDB(`SELECT code FROM auth WHERE password = '${password}' AND email = '${email}'`) //keeping to show others later
   return item.rows
 }
 
-//create table if doesnt exist
-async function createClient (code) {
-  let item = await queryDB(`CREATE TABLE IF NOT EXISTS ${code} (machine VARCHAR(255), serial VARCHAR(255), model VARCHAR(255), maintenance_due VARCHAR(255))`)
-  console.log(`Creating table if doesn't exist: ${code}`)
+//get table by code
+async function getTable (code) {
+  let item = await queryDB(`SELECT * FROM ${code}`)
   return item.rows
 }
-
-async function validLogin (pass, email) {
-  let item = await queryDB(`SELECT * FROM main WHERE password = '${pass}' AND name = '${email}'`)
-  item = item.rows
-  if (item == undefined || item.length == 0)
-    return false
-  return item[0].code
-}
-
 
 module.exports = { 
   getTable,
-  findInMain,
-  createClient,
-  validLogin
+  login,
+
 }

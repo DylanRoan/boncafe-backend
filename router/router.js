@@ -7,7 +7,7 @@ const multer = require('multer');
 const upload = multer();
 
 router.get('/main', upload.none(), controller.getMain)
-router.get('/client/:code', upload.none(), controller.getCode)
-//router.post('/login', upload.none(), controller.validLogin)
+router.post('/login', upload.none(), controller.login)
+router.post('/table', upload.none(), controller.getTable)
 
 module.exports = router;
