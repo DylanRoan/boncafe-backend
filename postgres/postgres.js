@@ -37,6 +37,7 @@ async function getTable (code) {
 }
 
 module.exports = { 
+  getMain,
   getTable,
   login,
 
