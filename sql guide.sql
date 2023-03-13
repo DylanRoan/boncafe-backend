@@ -21,3 +21,5 @@ CREATE TABLE <code> (
     maintenance_due DATE,
     maintain_count INT
 );
+
+--comment
