@@ -18,8 +18,7 @@ CREATE TABLE <code> (
     machine TEXT,
     serial TEXT,
     model TEXT,
-    maintenance_due DATE,
-    maintain_count INT
+    maintenance_due DATE
 );
 
 --comment
