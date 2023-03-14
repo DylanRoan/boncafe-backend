@@ -31,7 +31,13 @@ async function login (password, email) {
 
 //get table by code
 async function getTable (code) {
-  await queryDB(`CREATE TABLE IF NOT EXISTS ${code} `)
+  await queryDB(`CREATE TABLE IF NOT EXISTS ${code} (
+    machine TEXT,
+    serial TEXT,
+    model TEXT,
+    maintenance_due DATE
+  );`)
+  
   let item = await queryDB(`SELECT * FROM ${code}`)
   return item.rows
 }
