@@ -1,4 +1,6 @@
 require('dotenv').config()
+const bcrypt = require("bcrypt")
+const saltRounds = 8
 
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -24,10 +26,17 @@ async function getMain () {
 
 //authenticate
 async function login (password, email) {
-  let item = await queryDB("SELECT code FROM auth WHERE password = $1 AND email = $2", [password, email])
-  //let item = await queryDB(`SELECT code FROM auth WHERE password = '${password}' AND email = '${email}'`) //keeping to show others later
-  return item.rows
+  let item = await queryDB("SELECT code, password FROM auth WHERE email = $1", [email.toLowerCase()])
+  
+  item = item.rows
+  if (!Array.isArray(item) || !item.length) {
+    return false
+  }
+
+  if (await bcrypt.compare(password, item[0].password)) return item[0].code
+  else return false
 }
+
 
 //get table by code
 async function getTable (code) {
@@ -42,9 +51,23 @@ async function getTable (code) {
   return item.rows
 }
 
+//check if user exists
+async function userExists (email) {
+  let result = await queryDB(`SELECT code FROM auth WHERE email = $1`, [email])
+  return result.rows
+}
+
+//add user
+async function addUser (code, email, password)
+{
+  let hash = await bcrypt.hash(password, saltRounds)
+  await queryDB(`INSERT INTO auth (code, email, password) VALUES ($1, $2, $3)`, [code, email, hash])
+}
+
 module.exports = { 
   getMain,
   getTable,
   login,
-
+  userExists,
+  addUser
 }
