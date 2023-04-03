@@ -14,8 +14,8 @@ const login = async (req, res, next) => {
 
     let result = await db.login(req.body.password , req.body.email)
 
-    if (result) res.status(200).json({message: 'Success.'})
-    else res.status(200).json({message: 'Failed.'})
+    if (result) res.status(200).json({login: true})
+    else res.status(200).json({login: false})
 }
 
 //POST products list '/table'
@@ -31,7 +31,7 @@ const getTable = async (req, res, next) => {
         let table = await db.getTable(result)
         res.status(200).json(table)
     }
-    else res.status(200).json({message: 'Failed.'})
+    else res.status(200).json({login: false})
 }
 
 //POST new user '/adduser'
@@ -62,6 +62,14 @@ const addUser = async (req, res, next) => {
         return
     }
 
+    //check if password already exists
+    let password = req.body.password
+    if (password == undefined)
+    {
+        res.status(200).json({message: 'Invalid request, missing: password.'})
+        return
+    }
+
     //generate code
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -76,7 +84,7 @@ const addUser = async (req, res, next) => {
         code = req.body.code
     }
 
-    db.addUser(code, email, req.body.password)
+    db.addUser(code, email, password)
     res.status(200).json({message: 'Success!'})
 }
 
