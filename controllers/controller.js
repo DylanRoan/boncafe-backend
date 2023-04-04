@@ -1,4 +1,5 @@
-const db = require('../postgres/postgres.js')
+const db = require('../functions/postgres.js')
+const mailer = require('../functions/nodemailer.js')
 
 //GET table '/table'
 const getMain = async (req, res, next) => {
@@ -14,7 +15,7 @@ const login = async (req, res, next) => {
 
     let result = await db.login(req.body.password , req.body.email)
 
-    if (result) res.status(200).json({login: true})
+    if (result) res.status(200).json(result)
     else res.status(200).json({login: false})
 }
 
@@ -26,16 +27,17 @@ const getTable = async (req, res, next) => {
 
     let result = await db.login(req.body.password, req.body.email)
 
-    if (result)
-    {
-        let table = await db.getTable(result)
-        res.status(200).json(table)
-    }
-    else res.status(200).json({login: false})
+    if (!result) {res.status(200).json({login: false}); return}
+
+    if (!result.confirmed) {res.status(200).json({confirmed: false}); return}
+
+    let table = await db.getTable(result.code)
+
+    res.status(200).json(table)
 }
 
 //POST new user '/adduser'
-//Requires POST body : authcode, password, email, code (optional)
+//Requires POST body : authcode, password, email, code (optional), first_name, last_name
 const addUser = async (req, res, next) => {
 
     //check if allowed to add new user
@@ -70,13 +72,16 @@ const addUser = async (req, res, next) => {
         return
     }
 
+    if (req.body.first_name == undefined) { res.status(200).json({message: 'Missing: First Name.'}); return}
+    if (req.body.last_name == undefined) { res.status(200).json({message: 'Missing: Last Name.'}); return}
+
     //generate code
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
 
-    var code = `${email.split("@")[0].replace(/\W/g)}${yyyy}_${dd}_${mm}`
+    var code = `${email.split("@")[0].replace(/\W/g, '')}${yyyy}_${dd}_${mm}`
     
     if (req.body.code != undefined)
     {
@@ -84,14 +89,90 @@ const addUser = async (req, res, next) => {
         code = req.body.code
     }
 
-    db.addUser(code, email, password)
+    //adds letter to code if starts with number
+    if (/^\d/.test(code)) code = 'M'+code
+
+    await db.addUser(code, email, password, req.body.first_name, req.body.last_name)
     res.status(200).json({message: 'Success!'})
 }
 
+//POST confirmation email / sends email
+//requires email, password
+const sendConfirmation = async (req, res, next) => {
+    if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
+    if (req.body.password == undefined) { res.status(200).json({message: 'Missing: password.'}); return}
+
+    let result = await db.login(req.body.password , req.body.email)
+
+    if (!result) {
+        res.status(200).json({login: false})
+        return
+    }
+
+    if (result.confirmed) {res.status(200).json({confirmed: true}); return}
+
+    const data = {
+        "from": "req.body.email",
+        "to": req.body.email,
+        "subject": "Confirm Your Email Address | Boncafe UAE",
+        "text": `Please click the following link in order to confirm your email address:
+        \nhttps://boncafe-backend.herokuapp.com/confirm?code=${result.code}&confirm=true
+        \n\nDidn't request for this? Please reach out to us at `
+    }
+
+    res.status(200).json(await mailer.sendMail(data))
+}
+
+//GET confirm email link
+//requires param : code, confirm
+const confirmEmail = async (req, res, next) => {
+
+    if (req.query.code == undefined) { res.status(200).json({message: 'Missing: code.'}); return}
+    if (req.query.confirm == undefined) { res.status(200).json({message: 'Missing: confirmation.'}); return}
+
+    if (req.query.confirm != "true") {
+        res.status(200).json({message: 'Invalid request. Please click the valid link. If you think this is a mistake, please reach out to us.'})
+        return
+    }
+    
+    await db.confirmEmail(req.query.code)
+    res.status(200).json({message: "Complete!"})
+}
+
+//POST email maintenace request / reminder '/maintenance'
+//Requires POST body : password, email, images (eventually), subject (optional), text
+const maintenanceEmail = async (req, res, next) => {
+    if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
+    if (req.body.password == undefined) { res.status(200).json({message: 'Missing: password.'}); return}
+
+    let result = await db.login(req.body.password , req.body.email)
+
+    if (!result) {
+        res.status(200).json({login: false})
+        return
+    }
+
+    if (!result.confirmed) {res.status(200).json({confirmed: false}); return}
+
+    if (req.body.text == undefined) { res.status(200).json({message: 'Missing: email text.'}); return}
+
+    const data = {
+        "from": req.body.email,
+        "to": "melodyprojects.bsu23@gmail.com",
+        "cc": req.body.email,
+        "subject": ((req.body.subject != undefined) ? req.body.subject : "Maintenance Request"),
+        "text": req.body.text
+    }
+
+    res.status(200).json(await mailer.sendMail(data))
+}
 
 module.exports = {
     getMain,
     login,
     getTable,
-    addUser
+    addUser,
+    maintenanceEmail,
+    sendConfirmation,
+    confirmEmail
 }

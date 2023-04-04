@@ -5,9 +5,7 @@ const saltRounds = 8
 const Pool = require('pg').Pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URI,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false  }
 })
 
 //query the database
@@ -26,14 +24,14 @@ async function getMain () {
 
 //authenticate
 async function login (password, email) {
-  let item = await queryDB("SELECT code, password FROM auth WHERE email = $1", [email.toLowerCase()])
+  let item = await queryDB("SELECT code, password, confirmed FROM auth WHERE email = $1", [email.toLowerCase()])
   
   item = item.rows
   if (!Array.isArray(item) || !item.length) {
     return false
   }
 
-  if (await bcrypt.compare(password, item[0].password)) return item[0].code
+  if (await bcrypt.compare(password, item[0].password)) return {code: item[0].code, "confirmed": item[0].confirmed}
   else return false
 }
 
@@ -58,10 +56,16 @@ async function userExists (email) {
 }
 
 //add user
-async function addUser (code, email, password)
+async function addUser (code, email, password, first_name, last_name)
 {
   let hash = await bcrypt.hash(password, saltRounds)
-  await queryDB(`INSERT INTO auth (code, email, password) VALUES ($1, $2, $3)`, [code, email, hash])
+  await queryDB(`INSERT INTO auth (code, email, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5)`, [code, email.toLowerCase(), hash, first_name, last_name])
+}
+
+//confirm email
+async function confirmEmail (code)
+{
+  await queryDB(`UPDATE auth SET confirmed = TRUE WHERE code = $1`, [code])
 }
 
 module.exports = { 
@@ -69,5 +73,6 @@ module.exports = {
   getTable,
   login,
   userExists,
-  addUser
+  addUser,
+  confirmEmail
 }
