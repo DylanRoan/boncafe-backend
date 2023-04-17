@@ -117,7 +117,7 @@ const sendConfirmation = async (req, res, next) => {
         "subject": "Confirm Your Email Address | Boncafe UAE",
         "text": `Please click the following link in order to confirm your email address:
         \nhttps://boncafe-backend.herokuapp.com/confirm?code=${result.code}&confirm=true
-        \n\nDidn't request for this? Please reach out to us at `
+        \n\nDidn't request for this? Feel free to ignore this email.`
     }
 
     res.status(200).json(await mailer.sendMail(data))

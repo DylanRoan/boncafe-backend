@@ -1,6 +1,6 @@
 require('dotenv').config()
 const bcrypt = require("bcrypt")
-const saltRounds = 8
+const saltRounds = 8 //may move to a more secure method later
 
 const Pool = require('pg').Pool
 const pool = new Pool({
