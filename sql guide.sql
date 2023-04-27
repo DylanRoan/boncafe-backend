@@ -32,3 +32,5 @@ VALUES
 ('Marco - Ottomatic Coffeemaker', 'JW1VCCMO', '803228',	'2023-03-08'),
 ('ESPRESSO - AV', 'GWM7EB5Y', '791852', '2023-03-05'),
 ('Linea Mini Grey Gloss', 'LSBQI44F', '140567', '2023-02-03')
+
+-- 😭
