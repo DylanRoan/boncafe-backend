@@ -14,12 +14,28 @@ async function debug(date)
     mailer.sendMail(data)
 }
 
-async function checkDates(fireDate)
+async function checkDate(fireDate)
 {
     const date = fireDate.split("T")
-    var data = db.queryDB(`SELECT * FROM main WHERE maintenance = ${date}`)
+    var data = await db.getDate(date[0])
+
+    for (var i = 0; i < data.length; i++)
+    {
+        var contract = data[i]
+       
+        var data =  {
+            "from": "",
+            "to": contract.email,
+            "cc": "melodyprojects.bsu23@gmail.com",
+            "subject": `Scheduled Maintenance Request (${date[0]})`,
+            "text": "Good day,\n\nYour contracted machines require maintenance. Please reach out to us in order to settle a proper date for our technicians to check.\n\nKind regards,\nCompany" 
+        }
+
+        await mailer.sendMail(data)
+    }
 }
 
 module.exports = {
-    debug
+    debug,
+    checkDate
 }

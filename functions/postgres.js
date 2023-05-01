@@ -68,6 +68,20 @@ async function confirmEmail (code)
   await queryDB(`UPDATE auth SET confirmed = TRUE WHERE code = $1`, [code])
 }
 
+//get company from maintenance date
+async function getDate (date)
+{
+  let result = await queryDB(`SELECT * FROM main WHERE maintenance = $1`, [date])
+  return result.rows
+}
+
+//get company from maintenance code
+async function getCompanyFromCode (code)
+{
+  let result = await queryDB(`SELECT * FROM main WHERE code = $1`, [code])
+  return result.rows
+}
+
 module.exports = { 
   queryDB,
   getMain,
@@ -75,5 +89,7 @@ module.exports = {
   login,
   userExists,
   addUser,
-  confirmEmail
+  confirmEmail,
+  getDate,
+  getCompanyFromCode
 }

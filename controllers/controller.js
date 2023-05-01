@@ -1,7 +1,7 @@
 const db = require('../functions/postgres.js')
 const mailer = require('../functions/nodemailer.js')
 
-//GET table '/table'
+//GET table '/table' :: REMOVE
 const getMain = async (req, res, next) => {
     let result = await db.getMain()
     res.status(200).json(result)
@@ -167,6 +167,25 @@ const maintenanceEmail = async (req, res, next) => {
     res.status(200).json(await mailer.sendMail(data))
 }
 
+//POST get contract from code
+//Requires post body : password, email
+const getContract = async (req, res, next) => {
+    if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
+    if (req.body.password == undefined) { res.status(200).json({message: 'Missing: password.'}); return}
+
+    let result = await db.login(req.body.password , req.body.email)
+
+    if (!result) {
+        res.status(200).json({login: false})
+        return
+    }
+
+    let code = result.code
+    let data = await db.getCompanyFromCode(code)
+
+    res.status(200).json(data)
+}
+
 module.exports = {
     getMain,
     login,
@@ -174,5 +193,6 @@ module.exports = {
     addUser,
     maintenanceEmail,
     sendConfirmation,
-    confirmEmail
+    confirmEmail,
+    getContract
 }

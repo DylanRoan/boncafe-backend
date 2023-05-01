@@ -22,4 +22,5 @@ const schedulerFunction = require('./functions/scheduler.js')
 
 schedule.scheduleJob('0 12 * * *', function(fireDate){
   schedulerFunction.debug(fireDate)
+  schedulerFunction.checkDate(fireDate)
 })

@@ -15,4 +15,7 @@ router.post('/emailconfirm', upload.none(), controller.sendConfirmation)
 router.get('/confirm', upload.none(), controller.confirmEmail)
 
 router.post('/email', upload.none(), controller.maintenanceEmail)
+
+router.post('/contract', upload.none(), controller.getContract)
+
 module.exports = router;
