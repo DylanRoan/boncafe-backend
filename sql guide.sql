@@ -1,8 +1,9 @@
 --Create main table
 CREATE TABLE main (
     name TEXT NOT NULL UNIQUE,
-    start_date DATE,
-    end_date DATE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    maintenance DATE NOT NULL,
     code TEXT NOT NULL UNIQUE
 );
 

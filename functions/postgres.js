@@ -69,6 +69,7 @@ async function confirmEmail (code)
 }
 
 module.exports = { 
+  queryDB,
   getMain,
   getTable,
   login,

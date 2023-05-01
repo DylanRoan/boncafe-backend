@@ -15,3 +15,11 @@ app.route("/").get(function (req, res) {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+
+//scheduler for midnight
+const schedule = require('node-schedule')
+const schedulerFunction = require('./functions/scheduler.js')
+
+schedule.scheduleJob('0 12 * * *', function(fireDate){
+  schedulerFunction.debug(fireDate)
+})
