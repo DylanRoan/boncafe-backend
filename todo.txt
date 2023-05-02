@@ -1,3 +1,0 @@
-Error check for repeated unique code 
-Add official email / embed stuff
-SESSION TOKENS
