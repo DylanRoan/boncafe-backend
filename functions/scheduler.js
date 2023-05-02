@@ -23,7 +23,7 @@ async function checkDate(fireDate)
     {
         var contract = data[i]
        
-        var data =  {
+        const email =  {
             "from": "",
             "to": contract.email,
             "cc": "melodyprojects.bsu23@gmail.com",
@@ -31,7 +31,7 @@ async function checkDate(fireDate)
             "text": "Good day,\n\nYour contracted machines require maintenance. Please reach out to us in order to settle a proper date for our technicians to check.\n\nKind regards,\nCompany" 
         }
 
-        await mailer.sendMail(data)
+        await mailer.sendMail(email)
     }
 }
 
