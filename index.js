@@ -20,7 +20,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 const schedule = require('node-schedule')
 const schedulerFunction = require('./functions/scheduler.js')
 
-schedule.scheduleJob('35 8 * * *', function(fireDate){ //production uses UTC
+schedule.scheduleJob('0 8 * * *', function(fireDate){ //production uses UTC
   //schedulerFunction.debug()
   schedulerFunction.checkDate()
 })
