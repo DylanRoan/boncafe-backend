@@ -16,11 +16,11 @@ const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
-//scheduler for midnight
+//scheduler for noon
 const schedule = require('node-schedule')
 const schedulerFunction = require('./functions/scheduler.js')
 
-schedule.scheduleJob('0 8 * * *', function(fireDate){
-  schedulerFunction.debug(fireDate)
-  schedulerFunction.checkDate(fireDate)
+schedule.scheduleJob('30 8 * * *', function(fireDate){ //production uses UTC
+  //schedulerFunction.debug()
+  schedulerFunction.checkDate()
 })
