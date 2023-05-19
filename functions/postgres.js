@@ -82,6 +82,13 @@ async function getCompanyFromCode (code)
   return result.rows
 }
 
+//remove invalid email
+async function removeInvalidEmail (email)
+{
+  await queryDB(`DELETE FROM auth WHERE email = $1`, [email.toLowerCase()])
+}
+
+
 module.exports = { 
   queryDB,
   getMain,
@@ -91,5 +98,6 @@ module.exports = {
   addUser,
   confirmEmail,
   getDate,
-  getCompanyFromCode
+  getCompanyFromCode,
+  removeInvalidEmail
 }

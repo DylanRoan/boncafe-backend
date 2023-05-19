@@ -95,7 +95,7 @@ const addUser = async (req, res, next) => {
     res.status(200).json({message: 'Success!'})
 }
 
-//POST confirmation email / sends email
+//POST confirmation email / sends email '/emailconfirm'
 //requires email, password
 const sendConfirmation = async (req, res, next) => {
     if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
@@ -119,7 +119,14 @@ const sendConfirmation = async (req, res, next) => {
         \n\nDidn't request for this? Feel free to ignore this email.`
     }
 
-    res.status(200).json(await mailer.sendMail(data))
+    try {
+        res.status(200).json(await mailer.sendMail(data))
+    }
+    catch {
+        //remove email from db
+        await db.removeInvalidEmail(req.body.email)
+        res.status(200).json({message: 'invalid email'})
+    }
 }
 
 //GET confirm email link
