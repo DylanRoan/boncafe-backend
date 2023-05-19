@@ -24,14 +24,14 @@ async function getMain () {
 
 //authenticate
 async function login (password, email) {
-  let item = await queryDB("SELECT code, password, confirmed FROM auth WHERE email = $1", [email.toLowerCase()])
+  let item = await queryDB("SELECT code, password, confirmed, full_name FROM auth WHERE email = $1", [email.toLowerCase()])
   
   item = item.rows
   if (!Array.isArray(item) || !item.length) {
     return false
   }
 
-  if (await bcrypt.compare(password, item[0].password)) return {code: item[0].code, "confirmed": item[0].confirmed}
+  if (await bcrypt.compare(password, item[0].password)) return {code: item[0].code, "confirmed": item[0].confirmed, "name": item[0].full_name}
   else return false
 }
 
