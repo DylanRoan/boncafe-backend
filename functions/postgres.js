@@ -56,10 +56,10 @@ async function userExists (email) {
 }
 
 //add user
-async function addUser (code, email, password, first_name, last_name)
+async function addUser (code, email, password, full_name)
 {
   let hash = await bcrypt.hash(password, saltRounds)
-  await queryDB(`INSERT INTO auth (code, email, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5)`, [code, email.toLowerCase(), hash, first_name, last_name])
+  await queryDB(`INSERT INTO auth (code, email, password, full_name) VALUES ($1, $2, $3, $4)`, [code, email.toLowerCase(), hash, full_name])
 }
 
 //confirm email

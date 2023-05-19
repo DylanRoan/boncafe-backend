@@ -37,7 +37,7 @@ const getTable = async (req, res, next) => {
 }
 
 //POST new user '/adduser'
-//Requires POST body : authcode, password, email, code (optional), first_name, last_name
+//Requires POST body : authcode, password, email, code (optional), full_name
 const addUser = async (req, res, next) => {
 
     //check if allowed to add new user
@@ -72,8 +72,7 @@ const addUser = async (req, res, next) => {
         return
     }
 
-    if (req.body.first_name == undefined) { res.status(200).json({message: 'Missing: First Name.'}); return}
-    if (req.body.last_name == undefined) { res.status(200).json({message: 'Missing: Last Name.'}); return}
+    if (req.body.full_name == undefined) { res.status(200).json({message: 'Missing: Name.'}); return}
 
     //generate code
     var today = new Date();
@@ -92,7 +91,7 @@ const addUser = async (req, res, next) => {
     //adds letter to code if starts with number
     if (/^\d/.test(code)) code = 'M'+code
 
-    await db.addUser(code, email, password, req.body.first_name, req.body.last_name)
+    await db.addUser(code, email, password, req.body.full_name)
     res.status(200).json({message: 'Success!'})
 }
 
@@ -139,8 +138,8 @@ const confirmEmail = async (req, res, next) => {
     res.status(200).json({message: "Complete!"})
 }
 
-//POST email maintenace request / reminder '/maintenance'
-//Requires POST body : password, email, images (eventually), subject (optional), text
+//POST email maintenace request / reminder '/email'
+//Requires POST body : password, email, images (eventually), subject (optional), text, html
 const maintenanceEmail = async (req, res, next) => {
     if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
     if (req.body.password == undefined) { res.status(200).json({message: 'Missing: password.'}); return}
@@ -155,19 +154,21 @@ const maintenanceEmail = async (req, res, next) => {
     if (!result.confirmed) {res.status(200).json({confirmed: false}); return}
 
     if (req.body.text == undefined) { res.status(200).json({message: 'Missing: email text.'}); return}
+    if (req.body.html == undefined) { res.status(200).json({message: 'Missing: email html.'}); return}
 
     const data = {
         "from": req.body.email,
         "to": "melodyprojects.bsu23@gmail.com",
         "cc": req.body.email,
         "subject": ((req.body.subject != undefined) ? req.body.subject : "Maintenance Request"),
-        "text": req.body.text
+        "text": req.body.text,
+        "html": req.body.html
     }
 
     res.status(200).json(await mailer.sendMail(data))
 }
 
-//POST get contract from code
+//POST get contract '/contract'
 //Requires post body : password, email
 const getContract = async (req, res, next) => {
     if (req.body.email == undefined) { res.status(200).json({message: 'Missing: email.'}); return}
@@ -181,6 +182,7 @@ const getContract = async (req, res, next) => {
     }
 
     let code = result.code
+
     let data = await db.getCompanyFromCode(code)
 
     res.status(200).json(data)
