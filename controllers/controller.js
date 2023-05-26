@@ -1,10 +1,10 @@
 const db = require('../functions/postgres.js')
 const mailer = require('../functions/nodemailer.js')
 
-//GET table '/table' :: REMOVE
+//GET table '/main' :: REMOVE
 const getMain = async (req, res, next) => {
-    let result = await db.getMain()
-    res.status(200).json(result)
+    //let result = await db.getMain()
+    res.status(200).json({result: "deprecated"})
 }
 
 //POST login '/login'

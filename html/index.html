@@ -33,29 +33,9 @@
             <th>ROUTE</th>
             <th>TYPE</th>
             <th>DESCRIPTION</th>
-            <th>REQUIREMENTS</th>
         </tr>
 
         <!-- API 1 -->
-        <tr>
-            <td>
-                <p><b>Display Main Table</b><br></p>
-            </td>
-            <td>
-                <a href="https://boncafe-backend.herokuapp.com/main">https://boncafe-backend.herokuapp.com/main</a>
-            </td>
-            <td>
-                <p>GET</p>
-            </td>
-            <td>
-                <p>Gets entire main (contracts) table.</p>
-            </td>
-            <td>
-                <p>None.</p>
-            </td>
-        </tr>
-
-        <!-- API 2 -->
         <tr>
             <td>
                 <p><b>Login</b><br></p>
@@ -67,36 +47,14 @@
                 <p>POST</p>
             </td>
             <td>
-                <p>Confirms login.</p>
-            </td>
-            <td>
-                <p>Requires POST body:<br>email, password</p>
+                <p>Allows for user login.</p>
             </td>
         </tr>
 
-        <!-- API 3 -->
+        <!-- API 2 -->
         <tr>
             <td>
-                <p><b>Get Table</b><br></p>
-            </td>
-            <td>
-                <a href="https://boncafe-backend.herokuapp.com/table">https://boncafe-backend.herokuapp.com/table</a>
-            </td>
-            <td>
-                <p>POST</p>
-            </td>
-            <td>
-                <p>Gets table of owned products.</p>
-            </td>
-            <td>
-                <p>Requires POST body:<br>email, password</p>
-            </td>
-        </tr>
-        
-        <!-- API 4 -->
-        <tr>
-            <td>
-                <p><b>Sign Up / Add User</b><br></p>
+                <p><b>Signup</b><br></p>
             </td>
             <td>
                 <a href="https://boncafe-backend.herokuapp.com/adduser">https://boncafe-backend.herokuapp.com/adduser</a>
@@ -105,13 +63,57 @@
                 <p>POST</p>
             </td>
             <td>
-                <p>Adds user to auth table.</p>
-            </td>
-            <td>
-                <p>Requires POST body:<br>authcode (likely will be removed)<br>email, password<br>code (optional)</p>
+                <p>Allows for user signup.</p>
             </td>
         </tr>
 
+        <!-- API 3 -->
+        <tr>
+            <td>
+                <p><b>Get Products</b><br></p>
+            </td>
+            <td>
+                <a href="https://boncafe-backend.herokuapp.com/table">https://boncafe-backend.herokuapp.com/table</a>
+            </td>
+            <td>
+                <p>POST</p>
+            </td>
+            <td>
+                <p>Get user owned products.</p>
+            </td>
+        </tr>
+
+        <!-- API 3 -->
+        <tr>
+            <td>
+                <p><b>Get Contract</b><br></p>
+            </td>
+            <td>
+                <a href="https://boncafe-backend.herokuapp.com/contract">https://boncafe-backend.herokuapp.com/contract</a>
+            </td>
+            <td>
+                <p>POST</p>
+            </td>
+            <td>
+                <p>Get user contract.</p>
+            </td>
+        </tr>
+
+        <!-- API 4 -->
+        <tr>
+            <td>
+                <p><b>Send Email</b><br></p>
+            </td>
+            <td>
+                <a href="https://boncafe-backend.herokuapp.com/email">https://boncafe-backend.herokuapp.com/email</a>
+            </td>
+            <td>
+                <p>POST</p>
+            </td>
+            <td>
+                <p>Send email using registered email.</p>
+            </td>
+        </tr>
     </table>
 
 </body>
